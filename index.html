@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Absen Dirosah Ibnu Katsir</title>
+    <link rel="stylesheet" href="tampilan.css">
+</head>
+<body>
+    <header>
+        <div class="container">
+            <h1>Sistem Absensi Dirosah Ibnu Katsir</h1>
+            <nav id="nav"></nav>
+        </div>
+    </header>
+    
+    <div class="container">
+        <div id="dashboard" class="page active">
+            <h2>Dashboard</h2>
+            <div class="stats-grid" id="dashboardStats"></div>
+            <h3 style="margin-top: 30px; margin-bottom: 15px;">Absensi Hari Ini</h3>
+            <div id="todayAttendance"></div>
+        </div>
+        
+        <div id="teachers" class="page">
+            <h2>Data Pengajar</h2>
+            <button onclick="app.showTeacherModal()">+ Tambah Pengajar</button>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Nama</th>
+                        <th>Mata Pelajaran</th>
+                        <th>Kelas</th>
+                        <th>Aksi</th>
+                    </tr>
+                </thead>
+                <tbody id="teachersList"></tbody>
+            </table>
+        </div>
+        
+        <div id="attendance" class="page">
+            <h2>Input Absensi Harian</h2>
+            <div class="filter-bar">
+                <div class="form-group">
+                    <label>Tanggal</label>
+                    <input type="date" id="attendanceDate" onchange="app.loadAttendanceForDate()">
+                </div>
+                <button onclick="app.saveAttendance()">Simpan Absensi</button>
+            </div>
+            <div id="attendanceList"></div>
+        </div>
+        
+<div id="schedule" class="page">
+    <h2>Jadwal Mengajar</h2>
+    <button onclick="app.showScheduleModal()">+ Tambah Jadwal</button>
+    <div class="filter-bar">
+        <div class="form-group">
+            <label>Hari</label>
+            <select id="scheduleDay" onchange="app.loadSchedules()">
+                <option value="">Semua Hari</option>
+                <option value="Senin">Senin</option>
+                <option value="Selasa">Selasa</option>
+                <option value="Rabu">Rabu</option>
+                <option value="Kamis">Kamis</option>
+                <option value="Jumat">Jumat</option>
+                <option value="Sabtu">Sabtu</option>
+                <option value="Minggu">Ahad</option>
+            </select>
+        </div>
+        <div class="form-group">
+            <label>Pengajar</label>
+            <select id="scheduleTeacher" onchange="app.loadSchedules()">
+                <option value="">Semua Pengajar</option>
+            </select>
+        </div>
+    </div>
+    <div id="scheduleList"></div>
+</div>
+
+<div id="scheduleModal" class="modal">
+    <div class="modal-content">
+        <h2>Tambah Jadwal Mengajar</h2>
+        <form id="scheduleForm" onsubmit="app.saveSchedule(event)">
+            <div class="form-group">
+                <label>Pengajar *</label>
+                <select id="scheduleFormTeacher" required></select>
+            </div>
+            <div class="form-group">
+                <label>Mata Pelajaran *</label>
+                <select id="scheduleFormSubject" required></select>
+            </div>
+            <div class="form-group">
+                <label>Hari *</label>
+                <select id="scheduleFormDay" required>
+                    <option value="">Pilih Hari</option>
+                    <option value="Senin">Senin</option>
+                    <option value="Selasa">Selasa</option>
+                    <option value="Rabu">Rabu</option>
+                    <option value="Kamis">Kamis</option>
+                    <option value="Jumat">Jumat</option>
+                    <option value="Sabtu">Sabtu</option>
+                    <option value="Ahad">Ahad</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label>Jam Mulai *</label>
+                <input type="time" id="scheduleFormStart" required>
+            </div>
+            <div class="form-group">
+                <label>Jam Selesai *</label>
+                <input type="time" id="scheduleFormEnd" required>
+            </div>
+            <div class="form-group">
+                <label>Kelas *</label>
+                <input type="text" id="scheduleFormClass" placeholder="isi nama kelas" required>
+            </div>
+            <div class="btn-group">
+                <button type="submit">Simpan</button>
+                <button type="button" class="secondary" onclick="app.closeModal()">Batal</button>
+            </div>
+        </form>
+    </div>
+</div>
+        
+        <div id="reports" class="page">
+            <h2>Laporan Bulanan</h2>
+            <div class="filter-bar">
+                <div class="form-group">
+                    <label>Bulan</label>
+                    <input type="month" id="reportMonth" onchange="app.loadReport()">
+                </div>
+                <div class="form-group">
+                    <label>Pengajar</label>
+                    <select id="reportTeacher" onchange="app.loadReport()">
+                        <option value="">Pilih Pengajar</option>
+                    </select>
+                </div>
+                <button onclick="app.downloadCSV()">📥 Download CSV</button>
+            </div>
+            <div id="reportContent"></div>
+        </div>
+    </div>
+    
+    <div id="teacherModal" class="modal">
+        <div class="modal-content">
+            <h2 id="teacherModalTitle">Tambah Pengajar</h2>
+            <form id="teacherForm" onsubmit="app.saveTeacher(event)">
+                <input type="hidden" id="teacherId">
+                <div class="form-group">
+                    <label>Nama Lengkap *</label>
+                    <input type="text" id="teacherName" required>
+                </div>
+                <div class="form-group">
+                    <label>Mata Pelajaran (tekan Enter untuk menambah) *</label>
+                    <input type="text" id="subjectInput" placeholder="Ketik dan tekan Enter">
+                    <div id="subjectsChips" class="chips-input"></div>
+                </div>
+                <div class="form-group">
+                    <label>Kelas yang Diajar *</label>
+                    <input type="text" id="teacherClass" placeholder="Isi nama kelas" required>
+                </div>
+                <div class="btn-group">
+                    <button type="submit">Simpan</button>
+                    <button type="button" class="secondary" onclick="app.closeModal()">Batal</button>
+                </div>
+            </form>
+        </div>
+    </div>
+    
+
+<script src="aplikasi.js"></script>
+</body>
+</html>
